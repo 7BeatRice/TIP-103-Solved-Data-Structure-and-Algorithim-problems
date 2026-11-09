@@ -1,0 +1,84 @@
+"""CodePath Airlines operates in different regions around the world. 
+Some airports are connected directly with flights, while others are not.
+ However, if airport a is connected directly to airport b, and airport b is 
+ connected directly to airport c, then airport a is indirectly connected to airport c.
+
+An airline region is a group of directly or indirectly connected airports and 
+no other airports outside of the group.
+
+You are given an n x n matrix is_connected where is_connected[i][j] = 1 
+if CodePath Airlines offers a direct flight between airport i and airport j, 
+and is_connected[i][j] = 0 otherwise.
+
+Return the total number of airline regions 
+operated by CodePath Airlines.
+
+
+UMPIRE:
+Understand: 
+    Input: adjacency matrix, where element flights[i][j] = 1 means theres a direct flight from i to j
+    
+    output:an integer representing the number of airport region which is the conncected components
+      in graph representation
+
+    Edge case: all connected -> check after first dfs if visted == len(matrix[0]) if so return 1
+
+
+   
+    Match: finding number of connected components in a graph: bfs or dfs paired with vertex traversal
+    
+   
+Plan:
+    -create visited set
+    -iterate from 0 to len(is_connected[0]) to iterate through vertex
+    -have count variable
+    -perfrm dfs on current element appending visited vertex to visited set
+    -check if len(visited) == len(is_connected[0]), return ciount
+    -if current element in for loop not in visited increment count and do dfs from there   
+    -return count
+
+
+Implementation: see below
+Evaluation:
+Time: O(V+E) for every vertices that is reachable, we explore all its edges
+Space: O(V): visaited set
+"""
+
+def num_airline_regions(is_connected):
+    visited = set()
+    count = 0
+
+    def dfs(i):
+        visited.add(i)
+        for j in range(len(is_connected)):
+            if is_connected[i][j] == 1 and  j not in visited:
+                dfs(j)
+    for i in range(len(is_connected[0])):
+        if len(visited) == len(is_connected):
+            return count
+        if i not in visited:
+            dfs(i)
+            count+=1
+
+    return count      
+
+
+is_connected1 = [
+    [1, 1, 0],
+    [1, 1, 0],
+    [0, 0, 1]
+]
+
+is_connected2 = [
+    [1, 0, 0, 1],
+    [0, 1, 1, 0],
+    [0, 1, 1, 0],
+    [1, 0, 0, 1]
+]
+
+print(num_airline_regions(is_connected1))
+print(num_airline_regions(is_connected2)) 
+"""Example Output:
+
+2
+2"""
